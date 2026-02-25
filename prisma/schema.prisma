@@ -6,55 +6,65 @@
 
 generator client {
   provider = "prisma-client"
-  output   = "../generated/prisma"
+  output   = "../src/generated/prisma"
+  moduleFormat    = "cjs"
 }
-
 
 datasource db {
   provider = "postgresql"
 }
 
+//////////////////////
+// ENUMS
+//////////////////////
+
 enum Role {
-  EMPLOYEE
-  HR
-  IT
-  ADMIN
+  EMPLOYEE
+  HR
+  IT
+  ADMIN
 }
 
 enum TicketStatus {
-  OPEN
-  IN_PROGRESS
-  RESOLVED
+  OPEN
+  IN_PROGRESS
+  RESOLVED
 }
 
 enum TicketPriority {
-  CRITICAL
-  HIGH
-  LOW
+  CRITICAL
+  HIGH
+  LOW
 }
 
 enum Department {
-  HR
-  IT
+  HR
+  IT
 }
 
 enum AssetStatus {
-  AVAILABLE
-  ASSIGNED
-  MAINTENANCE
-  RETIRED
+  AVAILABLE
+  ASSIGNED
+  MAINTENANCE
+  RETIRED
 }
 
-model User {
-  id         Int       @id @default(autoincrement())
-  name       String
-  email      String    @unique
-  password   String
-  role       Role
-  isActive   Boolean   @default(true)
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
+//////////////////////
+// USERS (AUTH)
+//////////////////////
 
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  password  String
+  role      Role
+  isActive  Boolean  @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // relations
   ticketsCreated  Ticket[] @relation("TicketCreator")
   ticketsAssigned Ticket[] @relation("TicketAssignee")
   assetsAssigned  Asset[]  @relation("AssetOwner")
@@ -63,23 +73,30 @@ model User {
   @@index([role])
 }
 
+//////////////////////
+// TICKETS
+//////////////////////
+
 model Ticket {
-  id            Int           @id @default(autoincrement())   // ← internal PK, fast
-  code          String        @unique @db.VarChar(16)        // ← human friendly: TICK-0000123
-  title         String
-  summary       String
-  imageUrl      String?
-  status        TicketStatus  @default(OPEN)
-  priority      TicketPriority @default(LOW)
-  department    Department
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
+  id          String         @id @default(uuid())
+  title       String
+  summary     String
+  imageUrl    String?
 
-  createdById   Int
-  createdBy     User          @relation("TicketCreator", fields: [createdById], references: [id])
+  status      TicketStatus   @default(OPEN)
+  priority    TicketPriority @default(LOW)
+  department  Department
 
-  assignedToId  Int?
-  assignedTo    User?         @relation("TicketAssignee", fields: [assignedToId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // 🔹 creator
+  createdById String
+  createdBy   User @relation("TicketCreator", fields: [createdById], references: [id])
+
+  // 🔹 assignee (HR or IT)
+  assignedToId String?
+  assignedTo   User? @relation("TicketAssignee", fields: [assignedToId], references: [id])
 
   @@index([status])
   @@index([priority])
@@ -88,18 +105,24 @@ model Ticket {
   @@index([assignedToId])
 }
 
+//////////////////////
+// ASSETS (MINIMAL)
+//////////////////////
+
 model Asset {
-  id            Int           @id @default(autoincrement())   // ← internal PK
-  code          String        @unique @db.VarChar(16)        // ← AST-0000456
-  serialNumber  String        @unique                       // keep if needed for physical label
+  id            String      @id @default(uuid())
+  serialNumber  String      @unique // human readable like AST-001
   assetName     String
   assetType     String
-  assetStatus   AssetStatus   @default(AVAILABLE)
-  assignedToId  Int?
-  assignedTo    User?         @relation("AssetOwner", fields: [assignedToId], references: [id])
+  assetStatus   AssetStatus @default(AVAILABLE)
+
+  assignedToId  String?
+  assignedTo    User? @relation("AssetOwner", fields: [assignedToId], references: [id])
+
   assignedDate  DateTime?
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
   @@index([assetStatus])
   @@index([assetType])

@@ -4,9 +4,10 @@ import { AppService } from './app.service';
 import { TicketsModule } from './modules/tickets/tickets.module';
 import { AssetsModule } from './modules/assets/assets.module';
 import { PrismaService } from './prisma.service';
+import { MockAuthModule } from './modules/mock-auth/mock-auth.module';
 
 @Module({
-  imports: [TicketsModule, AssetsModule],
+  imports: [TicketsModule, AssetsModule, MockAuthModule],
   controllers: [AppController],
   providers: [AppService, PrismaService],
 })

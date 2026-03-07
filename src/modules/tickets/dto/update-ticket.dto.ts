@@ -1,4 +1,9 @@
-import { PartialType } from '@nestjs/mapped-types';
-import { CreateTicketDto } from './create-ticket.dto';
+import { TicketStatus } from 'src/generated/prisma/enums';
 
-export class UpdateTicketDto extends PartialType(CreateTicketDto) {}
+export interface AssignTicketDto {
+  assigneeId: string;
+}
+
+export interface UpdateTicketStatusDto {
+  status: TicketStatus;
+}

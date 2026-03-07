@@ -1,9 +1,10 @@
-import { TicketStatus } from 'src/generated/prisma/enums';
+import { PartialType } from '@nestjs/mapped-types';
+import { CreateTicketDto } from './create-ticket.dto';
+import { IsEnum, IsOptional } from 'class-validator';
+import { TicketStatus } from '../../../generated/prisma/client.js';
 
-export interface AssignTicketDto {
-  assigneeId: string;
-}
-
-export interface UpdateTicketStatusDto {
-  status: TicketStatus;
+export class UpdateTicketDto extends PartialType(CreateTicketDto) {
+  @IsEnum(TicketStatus)
+  @IsOptional()
+  status?: TicketStatus;
 }

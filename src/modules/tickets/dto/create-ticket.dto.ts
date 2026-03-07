@@ -7,7 +7,6 @@ import {
 } from 'class-validator';
 import { Department, TicketPriority } from 'src/generated/prisma/client';
 
-// Types for our service inputs
 export class CreateTicketDto {
   @IsString()
   @IsNotEmpty({ message: 'Ticket title cannot be empty' })
@@ -27,4 +26,12 @@ export class CreateTicketDto {
   @IsOptional()
   @IsUrl({}, { message: 'Image must be a valid URL' })
   imageUrl?: string;
+
+  @IsString()
+  @IsNotEmpty()
+  createdById: string;
+
+  @IsString()
+  @IsOptional()
+  assignedToId?: string;
 }

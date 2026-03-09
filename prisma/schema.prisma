@@ -13,13 +13,18 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
-// Enums
+
+
+
+//////////////////////
+// ENUMS
+//////////////////////
 
 enum Role {
   EMPLOYEE
   HR
-  IT
-  ADMIN 
+  IT_SUPPORT
+  IT_ADMIN // <-- FIXED TYPO HERE
 }
 
 enum TicketStatus {
@@ -46,7 +51,15 @@ enum AssetStatus {
   RETIRED
 }
 
-// Users(Authenticate)
+enum AssetType {
+  NETWORK
+  SOFTWARE
+  HARDWARE
+}
+
+//////////////////////
+// USERS (AUTH)
+//////////////////////
 
 model User {
   id        String   @id @default(nanoid(10))
@@ -66,9 +79,13 @@ model User {
 
   @@index([email])
   @@index([role])
+  assetAssignments AssetAssignment[] @relation("AssignedByAction")
+  assetsReceived AssetAssignment[] @relation("AssignedToAction")
 }
 
-// Tickets
+//////////////////////
+// TICKETS
+//////////////////////
 
 model Ticket {
   id          String         @id @default(nanoid(10))
@@ -83,13 +100,16 @@ model Ticket {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-// creator
+  // 🔹 creator
   createdById String
   createdBy   User @relation("TicketCreator", fields: [createdById], references: [id])
 
-// assignee (HR or IT)
+  // 🔹 assignee (HR or IT)
   assignedToId String?
   assignedTo   User? @relation("TicketAssignee", fields: [assignedToId], references: [id])
+
+  // Optional one-to-one detail for asset request/problem tickets
+  assetRequest AssetRequest?
 
   @@index([status])
   @@index([priority])
@@ -98,13 +118,38 @@ model Ticket {
   @@index([assignedToId])
 }
 
-// ASSETS
+//////////////////////
+// ASSET REQUESTS (Ticket-linked Details)
+//////////////////////
+
+model AssetRequest {
+  id                  String   @id @default(uuid())
+
+  // One-to-one mapping with a ticket
+  ticketId            String   @unique
+  ticket              Ticket   @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+
+  // Optional requested asset reference and free-text descriptors
+  assetId             String?
+  asset               Asset?   @relation(fields: [assetId], references: [id])
+  assetCategory       String?
+  assetClassification String?
+
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  @@index([assetId])
+}
+
+//////////////////////
+// ASSETS (MINIMAL)
+//////////////////////
 
 model Asset {
   id            String      @id @default(uuid())
-  serialNumber  String      @unique 
+  serialNumber  String      @unique // human readable like AST-001
   assetName     String
-  assetType     String
+  assetType     AssetType
   assetStatus   AssetStatus @default(AVAILABLE)
 
   assignedToId  String?
@@ -118,4 +163,32 @@ model Asset {
   @@index([assetStatus])
   @@index([assetType])
   @@index([assignedToId])
+  assetAssignments AssetAssignment[]
+  assetRequests    AssetRequest[]
+}
+
+//////////////////////
+// ASSET ASSIGNMENTS (History/Logs)
+//////////////////////
+
+model AssetAssignment {
+  id           String   @id @default(uuid())
+  
+  // The IT_SUPPORT or IT_ADMIN Member who performed the assignment
+  assignedById String
+  assignedBy   User     @relation("AssignedByAction", fields: [assignedById], references: [id])
+
+  // The Employee receiving the asset
+  assignedToId String
+  assignedTo   User     @relation("AssignedToAction", fields: [assignedToId], references: [id])
+
+  // The specific Asset being moved
+  assetId      String
+  asset        Asset    @relation(fields: [assetId], references: [id])
+
+  assignedAt   DateTime @default(now())
+
+  @@index([assignedById])
+  @@index([assignedToId])
+  @@index([assetId])
 }

@@ -10,5 +10,7 @@
  */
 export type * from './models/User.js'
 export type * from './models/Ticket.js'
+export type * from './models/AssetRequest.js'
 export type * from './models/Asset.js'
+export type * from './models/AssetAssignment.js'
 export type * from './commonInputTypes.js'

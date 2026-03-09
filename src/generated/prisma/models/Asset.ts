@@ -28,7 +28,7 @@ export type AssetMinAggregateOutputType = {
   id: string | null
   serialNumber: string | null
   assetName: string | null
-  assetType: string | null
+  assetType: $Enums.AssetType | null
   assetStatus: $Enums.AssetStatus | null
   assignedToId: string | null
   assignedDate: Date | null
@@ -40,7 +40,7 @@ export type AssetMaxAggregateOutputType = {
   id: string | null
   serialNumber: string | null
   assetName: string | null
-  assetType: string | null
+  assetType: $Enums.AssetType | null
   assetStatus: $Enums.AssetStatus | null
   assignedToId: string | null
   assignedDate: Date | null
@@ -175,7 +175,7 @@ export type AssetGroupByOutputType = {
   id: string
   serialNumber: string
   assetName: string
-  assetType: string
+  assetType: $Enums.AssetType
   assetStatus: $Enums.AssetStatus
   assignedToId: string | null
   assignedDate: Date | null
@@ -208,13 +208,15 @@ export type AssetWhereInput = {
   id?: Prisma.StringFilter<"Asset"> | string
   serialNumber?: Prisma.StringFilter<"Asset"> | string
   assetName?: Prisma.StringFilter<"Asset"> | string
-  assetType?: Prisma.StringFilter<"Asset"> | string
+  assetType?: Prisma.EnumAssetTypeFilter<"Asset"> | $Enums.AssetType
   assetStatus?: Prisma.EnumAssetStatusFilter<"Asset"> | $Enums.AssetStatus
   assignedToId?: Prisma.StringNullableFilter<"Asset"> | string | null
   assignedDate?: Prisma.DateTimeNullableFilter<"Asset"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Asset"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Asset"> | Date | string
   assignedTo?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  assetAssignments?: Prisma.AssetAssignmentListRelationFilter
+  assetRequests?: Prisma.AssetRequestListRelationFilter
 }
 
 export type AssetOrderByWithRelationInput = {
@@ -228,6 +230,8 @@ export type AssetOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   assignedTo?: Prisma.UserOrderByWithRelationInput
+  assetAssignments?: Prisma.AssetAssignmentOrderByRelationAggregateInput
+  assetRequests?: Prisma.AssetRequestOrderByRelationAggregateInput
 }
 
 export type AssetWhereUniqueInput = Prisma.AtLeast<{
@@ -237,13 +241,15 @@ export type AssetWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.AssetWhereInput[]
   NOT?: Prisma.AssetWhereInput | Prisma.AssetWhereInput[]
   assetName?: Prisma.StringFilter<"Asset"> | string
-  assetType?: Prisma.StringFilter<"Asset"> | string
+  assetType?: Prisma.EnumAssetTypeFilter<"Asset"> | $Enums.AssetType
   assetStatus?: Prisma.EnumAssetStatusFilter<"Asset"> | $Enums.AssetStatus
   assignedToId?: Prisma.StringNullableFilter<"Asset"> | string | null
   assignedDate?: Prisma.DateTimeNullableFilter<"Asset"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Asset"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Asset"> | Date | string
   assignedTo?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  assetAssignments?: Prisma.AssetAssignmentListRelationFilter
+  assetRequests?: Prisma.AssetRequestListRelationFilter
 }, "id" | "serialNumber">
 
 export type AssetOrderByWithAggregationInput = {
@@ -268,7 +274,7 @@ export type AssetScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"Asset"> | string
   serialNumber?: Prisma.StringWithAggregatesFilter<"Asset"> | string
   assetName?: Prisma.StringWithAggregatesFilter<"Asset"> | string
-  assetType?: Prisma.StringWithAggregatesFilter<"Asset"> | string
+  assetType?: Prisma.EnumAssetTypeWithAggregatesFilter<"Asset"> | $Enums.AssetType
   assetStatus?: Prisma.EnumAssetStatusWithAggregatesFilter<"Asset"> | $Enums.AssetStatus
   assignedToId?: Prisma.StringNullableWithAggregatesFilter<"Asset"> | string | null
   assignedDate?: Prisma.DateTimeNullableWithAggregatesFilter<"Asset"> | Date | string | null
@@ -280,55 +286,63 @@ export type AssetCreateInput = {
   id?: string
   serialNumber: string
   assetName: string
-  assetType: string
+  assetType: $Enums.AssetType
   assetStatus?: $Enums.AssetStatus
   assignedDate?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   assignedTo?: Prisma.UserCreateNestedOneWithoutAssetsAssignedInput
+  assetAssignments?: Prisma.AssetAssignmentCreateNestedManyWithoutAssetInput
+  assetRequests?: Prisma.AssetRequestCreateNestedManyWithoutAssetInput
 }
 
 export type AssetUncheckedCreateInput = {
   id?: string
   serialNumber: string
   assetName: string
-  assetType: string
+  assetType: $Enums.AssetType
   assetStatus?: $Enums.AssetStatus
   assignedToId?: string | null
   assignedDate?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  assetAssignments?: Prisma.AssetAssignmentUncheckedCreateNestedManyWithoutAssetInput
+  assetRequests?: Prisma.AssetRequestUncheckedCreateNestedManyWithoutAssetInput
 }
 
 export type AssetUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   serialNumber?: Prisma.StringFieldUpdateOperationsInput | string
   assetName?: Prisma.StringFieldUpdateOperationsInput | string
-  assetType?: Prisma.StringFieldUpdateOperationsInput | string
+  assetType?: Prisma.EnumAssetTypeFieldUpdateOperationsInput | $Enums.AssetType
   assetStatus?: Prisma.EnumAssetStatusFieldUpdateOperationsInput | $Enums.AssetStatus
   assignedDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   assignedTo?: Prisma.UserUpdateOneWithoutAssetsAssignedNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUpdateManyWithoutAssetNestedInput
+  assetRequests?: Prisma.AssetRequestUpdateManyWithoutAssetNestedInput
 }
 
 export type AssetUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   serialNumber?: Prisma.StringFieldUpdateOperationsInput | string
   assetName?: Prisma.StringFieldUpdateOperationsInput | string
-  assetType?: Prisma.StringFieldUpdateOperationsInput | string
+  assetType?: Prisma.EnumAssetTypeFieldUpdateOperationsInput | $Enums.AssetType
   assetStatus?: Prisma.EnumAssetStatusFieldUpdateOperationsInput | $Enums.AssetStatus
   assignedToId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   assignedDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  assetAssignments?: Prisma.AssetAssignmentUncheckedUpdateManyWithoutAssetNestedInput
+  assetRequests?: Prisma.AssetRequestUncheckedUpdateManyWithoutAssetNestedInput
 }
 
 export type AssetCreateManyInput = {
   id?: string
   serialNumber: string
   assetName: string
-  assetType: string
+  assetType: $Enums.AssetType
   assetStatus?: $Enums.AssetStatus
   assignedToId?: string | null
   assignedDate?: Date | string | null
@@ -340,7 +354,7 @@ export type AssetUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   serialNumber?: Prisma.StringFieldUpdateOperationsInput | string
   assetName?: Prisma.StringFieldUpdateOperationsInput | string
-  assetType?: Prisma.StringFieldUpdateOperationsInput | string
+  assetType?: Prisma.EnumAssetTypeFieldUpdateOperationsInput | $Enums.AssetType
   assetStatus?: Prisma.EnumAssetStatusFieldUpdateOperationsInput | $Enums.AssetStatus
   assignedDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -351,7 +365,7 @@ export type AssetUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   serialNumber?: Prisma.StringFieldUpdateOperationsInput | string
   assetName?: Prisma.StringFieldUpdateOperationsInput | string
-  assetType?: Prisma.StringFieldUpdateOperationsInput | string
+  assetType?: Prisma.EnumAssetTypeFieldUpdateOperationsInput | $Enums.AssetType
   assetStatus?: Prisma.EnumAssetStatusFieldUpdateOperationsInput | $Enums.AssetStatus
   assignedToId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   assignedDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -367,6 +381,11 @@ export type AssetListRelationFilter = {
 
 export type AssetOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
+}
+
+export type AssetNullableScalarRelationFilter = {
+  is?: Prisma.AssetWhereInput | null
+  isNot?: Prisma.AssetWhereInput | null
 }
 
 export type AssetCountOrderByAggregateInput = {
@@ -403,6 +422,11 @@ export type AssetMinOrderByAggregateInput = {
   assignedDate?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type AssetScalarRelationFilter = {
+  is?: Prisma.AssetWhereInput
+  isNot?: Prisma.AssetWhereInput
 }
 
 export type AssetCreateNestedManyWithoutAssignedToInput = {
@@ -447,6 +471,26 @@ export type AssetUncheckedUpdateManyWithoutAssignedToNestedInput = {
   deleteMany?: Prisma.AssetScalarWhereInput | Prisma.AssetScalarWhereInput[]
 }
 
+export type AssetCreateNestedOneWithoutAssetRequestsInput = {
+  create?: Prisma.XOR<Prisma.AssetCreateWithoutAssetRequestsInput, Prisma.AssetUncheckedCreateWithoutAssetRequestsInput>
+  connectOrCreate?: Prisma.AssetCreateOrConnectWithoutAssetRequestsInput
+  connect?: Prisma.AssetWhereUniqueInput
+}
+
+export type AssetUpdateOneWithoutAssetRequestsNestedInput = {
+  create?: Prisma.XOR<Prisma.AssetCreateWithoutAssetRequestsInput, Prisma.AssetUncheckedCreateWithoutAssetRequestsInput>
+  connectOrCreate?: Prisma.AssetCreateOrConnectWithoutAssetRequestsInput
+  upsert?: Prisma.AssetUpsertWithoutAssetRequestsInput
+  disconnect?: Prisma.AssetWhereInput | boolean
+  delete?: Prisma.AssetWhereInput | boolean
+  connect?: Prisma.AssetWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.AssetUpdateToOneWithWhereWithoutAssetRequestsInput, Prisma.AssetUpdateWithoutAssetRequestsInput>, Prisma.AssetUncheckedUpdateWithoutAssetRequestsInput>
+}
+
+export type EnumAssetTypeFieldUpdateOperationsInput = {
+  set?: $Enums.AssetType
+}
+
 export type EnumAssetStatusFieldUpdateOperationsInput = {
   set?: $Enums.AssetStatus
 }
@@ -455,26 +499,44 @@ export type NullableDateTimeFieldUpdateOperationsInput = {
   set?: Date | string | null
 }
 
+export type AssetCreateNestedOneWithoutAssetAssignmentsInput = {
+  create?: Prisma.XOR<Prisma.AssetCreateWithoutAssetAssignmentsInput, Prisma.AssetUncheckedCreateWithoutAssetAssignmentsInput>
+  connectOrCreate?: Prisma.AssetCreateOrConnectWithoutAssetAssignmentsInput
+  connect?: Prisma.AssetWhereUniqueInput
+}
+
+export type AssetUpdateOneRequiredWithoutAssetAssignmentsNestedInput = {
+  create?: Prisma.XOR<Prisma.AssetCreateWithoutAssetAssignmentsInput, Prisma.AssetUncheckedCreateWithoutAssetAssignmentsInput>
+  connectOrCreate?: Prisma.AssetCreateOrConnectWithoutAssetAssignmentsInput
+  upsert?: Prisma.AssetUpsertWithoutAssetAssignmentsInput
+  connect?: Prisma.AssetWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.AssetUpdateToOneWithWhereWithoutAssetAssignmentsInput, Prisma.AssetUpdateWithoutAssetAssignmentsInput>, Prisma.AssetUncheckedUpdateWithoutAssetAssignmentsInput>
+}
+
 export type AssetCreateWithoutAssignedToInput = {
   id?: string
   serialNumber: string
   assetName: string
-  assetType: string
+  assetType: $Enums.AssetType
   assetStatus?: $Enums.AssetStatus
   assignedDate?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  assetAssignments?: Prisma.AssetAssignmentCreateNestedManyWithoutAssetInput
+  assetRequests?: Prisma.AssetRequestCreateNestedManyWithoutAssetInput
 }
 
 export type AssetUncheckedCreateWithoutAssignedToInput = {
   id?: string
   serialNumber: string
   assetName: string
-  assetType: string
+  assetType: $Enums.AssetType
   assetStatus?: $Enums.AssetStatus
   assignedDate?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  assetAssignments?: Prisma.AssetAssignmentUncheckedCreateNestedManyWithoutAssetInput
+  assetRequests?: Prisma.AssetRequestUncheckedCreateNestedManyWithoutAssetInput
 }
 
 export type AssetCreateOrConnectWithoutAssignedToInput = {
@@ -510,7 +572,7 @@ export type AssetScalarWhereInput = {
   id?: Prisma.StringFilter<"Asset"> | string
   serialNumber?: Prisma.StringFilter<"Asset"> | string
   assetName?: Prisma.StringFilter<"Asset"> | string
-  assetType?: Prisma.StringFilter<"Asset"> | string
+  assetType?: Prisma.EnumAssetTypeFilter<"Asset"> | $Enums.AssetType
   assetStatus?: Prisma.EnumAssetStatusFilter<"Asset"> | $Enums.AssetStatus
   assignedToId?: Prisma.StringNullableFilter<"Asset"> | string | null
   assignedDate?: Prisma.DateTimeNullableFilter<"Asset"> | Date | string | null
@@ -518,11 +580,147 @@ export type AssetScalarWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"Asset"> | Date | string
 }
 
+export type AssetCreateWithoutAssetRequestsInput = {
+  id?: string
+  serialNumber: string
+  assetName: string
+  assetType: $Enums.AssetType
+  assetStatus?: $Enums.AssetStatus
+  assignedDate?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  assignedTo?: Prisma.UserCreateNestedOneWithoutAssetsAssignedInput
+  assetAssignments?: Prisma.AssetAssignmentCreateNestedManyWithoutAssetInput
+}
+
+export type AssetUncheckedCreateWithoutAssetRequestsInput = {
+  id?: string
+  serialNumber: string
+  assetName: string
+  assetType: $Enums.AssetType
+  assetStatus?: $Enums.AssetStatus
+  assignedToId?: string | null
+  assignedDate?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  assetAssignments?: Prisma.AssetAssignmentUncheckedCreateNestedManyWithoutAssetInput
+}
+
+export type AssetCreateOrConnectWithoutAssetRequestsInput = {
+  where: Prisma.AssetWhereUniqueInput
+  create: Prisma.XOR<Prisma.AssetCreateWithoutAssetRequestsInput, Prisma.AssetUncheckedCreateWithoutAssetRequestsInput>
+}
+
+export type AssetUpsertWithoutAssetRequestsInput = {
+  update: Prisma.XOR<Prisma.AssetUpdateWithoutAssetRequestsInput, Prisma.AssetUncheckedUpdateWithoutAssetRequestsInput>
+  create: Prisma.XOR<Prisma.AssetCreateWithoutAssetRequestsInput, Prisma.AssetUncheckedCreateWithoutAssetRequestsInput>
+  where?: Prisma.AssetWhereInput
+}
+
+export type AssetUpdateToOneWithWhereWithoutAssetRequestsInput = {
+  where?: Prisma.AssetWhereInput
+  data: Prisma.XOR<Prisma.AssetUpdateWithoutAssetRequestsInput, Prisma.AssetUncheckedUpdateWithoutAssetRequestsInput>
+}
+
+export type AssetUpdateWithoutAssetRequestsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  serialNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  assetName?: Prisma.StringFieldUpdateOperationsInput | string
+  assetType?: Prisma.EnumAssetTypeFieldUpdateOperationsInput | $Enums.AssetType
+  assetStatus?: Prisma.EnumAssetStatusFieldUpdateOperationsInput | $Enums.AssetStatus
+  assignedDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  assignedTo?: Prisma.UserUpdateOneWithoutAssetsAssignedNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUpdateManyWithoutAssetNestedInput
+}
+
+export type AssetUncheckedUpdateWithoutAssetRequestsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  serialNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  assetName?: Prisma.StringFieldUpdateOperationsInput | string
+  assetType?: Prisma.EnumAssetTypeFieldUpdateOperationsInput | $Enums.AssetType
+  assetStatus?: Prisma.EnumAssetStatusFieldUpdateOperationsInput | $Enums.AssetStatus
+  assignedToId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  assignedDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  assetAssignments?: Prisma.AssetAssignmentUncheckedUpdateManyWithoutAssetNestedInput
+}
+
+export type AssetCreateWithoutAssetAssignmentsInput = {
+  id?: string
+  serialNumber: string
+  assetName: string
+  assetType: $Enums.AssetType
+  assetStatus?: $Enums.AssetStatus
+  assignedDate?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  assignedTo?: Prisma.UserCreateNestedOneWithoutAssetsAssignedInput
+  assetRequests?: Prisma.AssetRequestCreateNestedManyWithoutAssetInput
+}
+
+export type AssetUncheckedCreateWithoutAssetAssignmentsInput = {
+  id?: string
+  serialNumber: string
+  assetName: string
+  assetType: $Enums.AssetType
+  assetStatus?: $Enums.AssetStatus
+  assignedToId?: string | null
+  assignedDate?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  assetRequests?: Prisma.AssetRequestUncheckedCreateNestedManyWithoutAssetInput
+}
+
+export type AssetCreateOrConnectWithoutAssetAssignmentsInput = {
+  where: Prisma.AssetWhereUniqueInput
+  create: Prisma.XOR<Prisma.AssetCreateWithoutAssetAssignmentsInput, Prisma.AssetUncheckedCreateWithoutAssetAssignmentsInput>
+}
+
+export type AssetUpsertWithoutAssetAssignmentsInput = {
+  update: Prisma.XOR<Prisma.AssetUpdateWithoutAssetAssignmentsInput, Prisma.AssetUncheckedUpdateWithoutAssetAssignmentsInput>
+  create: Prisma.XOR<Prisma.AssetCreateWithoutAssetAssignmentsInput, Prisma.AssetUncheckedCreateWithoutAssetAssignmentsInput>
+  where?: Prisma.AssetWhereInput
+}
+
+export type AssetUpdateToOneWithWhereWithoutAssetAssignmentsInput = {
+  where?: Prisma.AssetWhereInput
+  data: Prisma.XOR<Prisma.AssetUpdateWithoutAssetAssignmentsInput, Prisma.AssetUncheckedUpdateWithoutAssetAssignmentsInput>
+}
+
+export type AssetUpdateWithoutAssetAssignmentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  serialNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  assetName?: Prisma.StringFieldUpdateOperationsInput | string
+  assetType?: Prisma.EnumAssetTypeFieldUpdateOperationsInput | $Enums.AssetType
+  assetStatus?: Prisma.EnumAssetStatusFieldUpdateOperationsInput | $Enums.AssetStatus
+  assignedDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  assignedTo?: Prisma.UserUpdateOneWithoutAssetsAssignedNestedInput
+  assetRequests?: Prisma.AssetRequestUpdateManyWithoutAssetNestedInput
+}
+
+export type AssetUncheckedUpdateWithoutAssetAssignmentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  serialNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  assetName?: Prisma.StringFieldUpdateOperationsInput | string
+  assetType?: Prisma.EnumAssetTypeFieldUpdateOperationsInput | $Enums.AssetType
+  assetStatus?: Prisma.EnumAssetStatusFieldUpdateOperationsInput | $Enums.AssetStatus
+  assignedToId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  assignedDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  assetRequests?: Prisma.AssetRequestUncheckedUpdateManyWithoutAssetNestedInput
+}
+
 export type AssetCreateManyAssignedToInput = {
   id?: string
   serialNumber: string
   assetName: string
-  assetType: string
+  assetType: $Enums.AssetType
   assetStatus?: $Enums.AssetStatus
   assignedDate?: Date | string | null
   createdAt?: Date | string
@@ -533,35 +731,77 @@ export type AssetUpdateWithoutAssignedToInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   serialNumber?: Prisma.StringFieldUpdateOperationsInput | string
   assetName?: Prisma.StringFieldUpdateOperationsInput | string
-  assetType?: Prisma.StringFieldUpdateOperationsInput | string
+  assetType?: Prisma.EnumAssetTypeFieldUpdateOperationsInput | $Enums.AssetType
   assetStatus?: Prisma.EnumAssetStatusFieldUpdateOperationsInput | $Enums.AssetStatus
   assignedDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  assetAssignments?: Prisma.AssetAssignmentUpdateManyWithoutAssetNestedInput
+  assetRequests?: Prisma.AssetRequestUpdateManyWithoutAssetNestedInput
 }
 
 export type AssetUncheckedUpdateWithoutAssignedToInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   serialNumber?: Prisma.StringFieldUpdateOperationsInput | string
   assetName?: Prisma.StringFieldUpdateOperationsInput | string
-  assetType?: Prisma.StringFieldUpdateOperationsInput | string
+  assetType?: Prisma.EnumAssetTypeFieldUpdateOperationsInput | $Enums.AssetType
   assetStatus?: Prisma.EnumAssetStatusFieldUpdateOperationsInput | $Enums.AssetStatus
   assignedDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  assetAssignments?: Prisma.AssetAssignmentUncheckedUpdateManyWithoutAssetNestedInput
+  assetRequests?: Prisma.AssetRequestUncheckedUpdateManyWithoutAssetNestedInput
 }
 
 export type AssetUncheckedUpdateManyWithoutAssignedToInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   serialNumber?: Prisma.StringFieldUpdateOperationsInput | string
   assetName?: Prisma.StringFieldUpdateOperationsInput | string
-  assetType?: Prisma.StringFieldUpdateOperationsInput | string
+  assetType?: Prisma.EnumAssetTypeFieldUpdateOperationsInput | $Enums.AssetType
   assetStatus?: Prisma.EnumAssetStatusFieldUpdateOperationsInput | $Enums.AssetStatus
   assignedDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
+
+/**
+ * Count Type AssetCountOutputType
+ */
+
+export type AssetCountOutputType = {
+  assetAssignments: number
+  assetRequests: number
+}
+
+export type AssetCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  assetAssignments?: boolean | AssetCountOutputTypeCountAssetAssignmentsArgs
+  assetRequests?: boolean | AssetCountOutputTypeCountAssetRequestsArgs
+}
+
+/**
+ * AssetCountOutputType without action
+ */
+export type AssetCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AssetCountOutputType
+   */
+  select?: Prisma.AssetCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * AssetCountOutputType without action
+ */
+export type AssetCountOutputTypeCountAssetAssignmentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.AssetAssignmentWhereInput
+}
+
+/**
+ * AssetCountOutputType without action
+ */
+export type AssetCountOutputTypeCountAssetRequestsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.AssetRequestWhereInput
+}
 
 
 export type AssetSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -575,6 +815,9 @@ export type AssetSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   createdAt?: boolean
   updatedAt?: boolean
   assignedTo?: boolean | Prisma.Asset$assignedToArgs<ExtArgs>
+  assetAssignments?: boolean | Prisma.Asset$assetAssignmentsArgs<ExtArgs>
+  assetRequests?: boolean | Prisma.Asset$assetRequestsArgs<ExtArgs>
+  _count?: boolean | Prisma.AssetCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["asset"]>
 
 export type AssetSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -618,6 +861,9 @@ export type AssetSelectScalar = {
 export type AssetOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "serialNumber" | "assetName" | "assetType" | "assetStatus" | "assignedToId" | "assignedDate" | "createdAt" | "updatedAt", ExtArgs["result"]["asset"]>
 export type AssetInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   assignedTo?: boolean | Prisma.Asset$assignedToArgs<ExtArgs>
+  assetAssignments?: boolean | Prisma.Asset$assetAssignmentsArgs<ExtArgs>
+  assetRequests?: boolean | Prisma.Asset$assetRequestsArgs<ExtArgs>
+  _count?: boolean | Prisma.AssetCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type AssetIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   assignedTo?: boolean | Prisma.Asset$assignedToArgs<ExtArgs>
@@ -630,12 +876,14 @@ export type $AssetPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   name: "Asset"
   objects: {
     assignedTo: Prisma.$UserPayload<ExtArgs> | null
+    assetAssignments: Prisma.$AssetAssignmentPayload<ExtArgs>[]
+    assetRequests: Prisma.$AssetRequestPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     serialNumber: string
     assetName: string
-    assetType: string
+    assetType: $Enums.AssetType
     assetStatus: $Enums.AssetStatus
     assignedToId: string | null
     assignedDate: Date | null
@@ -1036,6 +1284,8 @@ readonly fields: AssetFieldRefs;
 export interface Prisma__AssetClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   assignedTo<T extends Prisma.Asset$assignedToArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Asset$assignedToArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  assetAssignments<T extends Prisma.Asset$assetAssignmentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Asset$assetAssignmentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AssetAssignmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  assetRequests<T extends Prisma.Asset$assetRequestsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Asset$assetRequestsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AssetRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1068,7 +1318,7 @@ export interface AssetFieldRefs {
   readonly id: Prisma.FieldRef<"Asset", 'String'>
   readonly serialNumber: Prisma.FieldRef<"Asset", 'String'>
   readonly assetName: Prisma.FieldRef<"Asset", 'String'>
-  readonly assetType: Prisma.FieldRef<"Asset", 'String'>
+  readonly assetType: Prisma.FieldRef<"Asset", 'AssetType'>
   readonly assetStatus: Prisma.FieldRef<"Asset", 'AssetStatus'>
   readonly assignedToId: Prisma.FieldRef<"Asset", 'String'>
   readonly assignedDate: Prisma.FieldRef<"Asset", 'DateTime'>
@@ -1486,6 +1736,54 @@ export type Asset$assignedToArgs<ExtArgs extends runtime.Types.Extensions.Intern
    */
   include?: Prisma.UserInclude<ExtArgs> | null
   where?: Prisma.UserWhereInput
+}
+
+/**
+ * Asset.assetAssignments
+ */
+export type Asset$assetAssignmentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AssetAssignment
+   */
+  select?: Prisma.AssetAssignmentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the AssetAssignment
+   */
+  omit?: Prisma.AssetAssignmentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AssetAssignmentInclude<ExtArgs> | null
+  where?: Prisma.AssetAssignmentWhereInput
+  orderBy?: Prisma.AssetAssignmentOrderByWithRelationInput | Prisma.AssetAssignmentOrderByWithRelationInput[]
+  cursor?: Prisma.AssetAssignmentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.AssetAssignmentScalarFieldEnum | Prisma.AssetAssignmentScalarFieldEnum[]
+}
+
+/**
+ * Asset.assetRequests
+ */
+export type Asset$assetRequestsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AssetRequest
+   */
+  select?: Prisma.AssetRequestSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the AssetRequest
+   */
+  omit?: Prisma.AssetRequestOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AssetRequestInclude<ExtArgs> | null
+  where?: Prisma.AssetRequestWhereInput
+  orderBy?: Prisma.AssetRequestOrderByWithRelationInput | Prisma.AssetRequestOrderByWithRelationInput[]
+  cursor?: Prisma.AssetRequestWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.AssetRequestScalarFieldEnum | Prisma.AssetRequestScalarFieldEnum[]
 }
 
 /**

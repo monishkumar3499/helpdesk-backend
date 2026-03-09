@@ -53,7 +53,9 @@ export const AnyNull = runtime.AnyNull
 export const ModelName = {
   User: 'User',
   Ticket: 'Ticket',
-  Asset: 'Asset'
+  AssetRequest: 'AssetRequest',
+  Asset: 'Asset',
+  AssetAssignment: 'AssetAssignment'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -103,6 +105,19 @@ export const TicketScalarFieldEnum = {
 export type TicketScalarFieldEnum = (typeof TicketScalarFieldEnum)[keyof typeof TicketScalarFieldEnum]
 
 
+export const AssetRequestScalarFieldEnum = {
+  id: 'id',
+  ticketId: 'ticketId',
+  assetId: 'assetId',
+  assetCategory: 'assetCategory',
+  assetClassification: 'assetClassification',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AssetRequestScalarFieldEnum = (typeof AssetRequestScalarFieldEnum)[keyof typeof AssetRequestScalarFieldEnum]
+
+
 export const AssetScalarFieldEnum = {
   id: 'id',
   serialNumber: 'serialNumber',
@@ -116,6 +131,17 @@ export const AssetScalarFieldEnum = {
 } as const
 
 export type AssetScalarFieldEnum = (typeof AssetScalarFieldEnum)[keyof typeof AssetScalarFieldEnum]
+
+
+export const AssetAssignmentScalarFieldEnum = {
+  id: 'id',
+  assignedById: 'assignedById',
+  assignedToId: 'assignedToId',
+  assetId: 'assetId',
+  assignedAt: 'assignedAt'
+} as const
+
+export type AssetAssignmentScalarFieldEnum = (typeof AssetAssignmentScalarFieldEnum)[keyof typeof AssetAssignmentScalarFieldEnum]
 
 
 export const SortOrder = {

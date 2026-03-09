@@ -5,7 +5,7 @@ import {
   IsString,
   IsUrl,
 } from 'class-validator';
-import { Department, TicketPriority } from 'src/generated/prisma/client';
+import { Department, TicketPriority } from 'src/generated/prisma/enums';
 
 export class CreateTicketDto {
   @IsString()

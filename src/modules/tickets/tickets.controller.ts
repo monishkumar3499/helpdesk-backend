@@ -1,11 +1,18 @@
 import {
-  Controller, Get, Post, Body, Patch,
-  Param, Delete, Query,
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Query,
 } from '@nestjs/common';
 import { TicketsService } from './tickets.service';
+import { TicketStatus } from 'src/generated/prisma/enums';
 import { CreateTicketDto } from './dto/create-ticket.dto';
+import { GetTicketsFilterDto } from './dto/filter-ticket.dto';
 import { UpdateTicketDto } from './dto/update-ticket.dto';
-import { TicketStatus } from '../../generated/prisma/client.js';
 
 @Controller('tickets')
 export class TicketsController {
@@ -16,9 +23,18 @@ export class TicketsController {
     return this.ticketsService.create(createTicketDto);
   }
 
+  // --- "MINE" ROUTE (Must come before /:id) ---
+  @Get('mine')
+  getMyTickets() {
+    // TODO: Extract ID from JWT Auth Guard
+    const userId = 'example-user-id';
+    return this.ticketsService.getMyTickets(userId);
+  }
+
+  // Uses the full Filter DTO for pagination and multi-filtering
   @Get()
-  findAll(@Query('department') department?: string) {
-    return this.ticketsService.findAll(department);
+  findAll(@Query() filterDto: GetTicketsFilterDto) {
+    return this.ticketsService.findAll(filterDto);
   }
 
   @Get(':id')
@@ -32,10 +48,7 @@ export class TicketsController {
   }
 
   @Patch(':id/status')
-  updateStatus(
-    @Param('id') id: string,
-    @Body('status') status: TicketStatus,
-  ) {
+  updateStatus(@Param('id') id: string, @Body('status') status: TicketStatus) {
     return this.ticketsService.updateStatus(id, status);
   }
 

@@ -1,94 +1,53 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
-  provider = "prisma-client"
-  output   = "../src/generated/prisma"
-  moduleFormat    = "cjs"
+  provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "postgresql"
 }
-// Enums
-
-enum Role {
-  EMPLOYEE
-  HR
-  IT
-  ADMIN 
-}
-
-enum TicketStatus {
-  OPEN
-  IN_PROGRESS
-  RESOLVED
-}
-
-enum TicketPriority {
-  CRITICAL
-  HIGH
-  LOW
-}
-
-enum Department {
-  HR
-  IT
-}
-
-enum AssetStatus {
-  AVAILABLE
-  ASSIGNED
-  MAINTENANCE
-  RETIRED
-}
-
-// Users(Authenticate)
 
 model User {
-  id        String   @id @default(nanoid(10))
-  name      String
-  email     String   @unique
-  password  String
-  role      Role
-  isActive  Boolean  @default(true)
+  id              String   @id @default(nanoid(10))
+  name            String
+  email           String   @unique
+  password        String
+  role            Role
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  // relations
-  ticketsCreated  Ticket[] @relation("TicketCreator")
-  ticketsAssigned Ticket[] @relation("TicketAssignee")
   assetsAssigned  Asset[]  @relation("AssetOwner")
+  ticketsAssigned Ticket[] @relation("TicketAssignee")
+  ticketsCreated  Ticket[] @relation("TicketCreator")
 
   @@index([email])
   @@index([role])
 }
 
-// Tickets
-
 model Ticket {
-  id          String         @id @default(nanoid(10))
-  title       String
-  summary     String
-  imageUrl    String?
+  id           String         @id @default(nanoid(10))
+  ticketNumber Int            @default(autoincrement())
 
-  status      TicketStatus   @default(OPEN)
-  priority    TicketPriority @default(LOW)
-  department  Department
+  title        String
+  summary      String
+  imageUrl     String?
 
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  status       TicketStatus   @default(OPEN)
+  priority     TicketPriority @default(LOW)
+  department   Department
 
-// creator
-  createdById String
-  createdBy   User @relation("TicketCreator", fields: [createdById], references: [id])
+  // NEW FIELDS
+  requestType         RequestType?
+  assetDescription    String?
+  serviceDescription  String?
 
-// assignee (HR or IT)
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+
+  createdById  String
   assignedToId String?
+
+  createdBy    User  @relation("TicketCreator", fields: [createdById], references: [id], onDelete: Cascade)
   assignedTo   User? @relation("TicketAssignee", fields: [assignedToId], references: [id])
 
   @@index([status])
@@ -98,24 +57,62 @@ model Ticket {
   @@index([assignedToId])
 }
 
-// ASSETS
-
 model Asset {
-  id            String      @id @default(uuid())
-  serialNumber  String      @unique 
-  assetName     String
-  assetType     String
-  assetStatus   AssetStatus @default(AVAILABLE)
+  id           String      @id @default(uuid())
+  serialNumber String      @unique
+  assetName    String
+  assetType    String
+  description  String?
 
-  assignedToId  String?
-  assignedTo    User? @relation("AssetOwner", fields: [assignedToId], references: [id])
+  assetStatus  AssetStatus @default(AVAILABLE)
 
-  assignedDate  DateTime?
+  assignedToId String?
+  assignedDate DateTime?
 
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  assignedTo   User? @relation("AssetOwner", fields: [assignedToId], references: [id])
 
   @@index([assetStatus])
   @@index([assetType])
   @@index([assignedToId])
+}
+
+enum Role {
+  EMPLOYEE
+  HR
+  IT
+  ADMIN
+}
+
+enum TicketStatus {
+  OPEN
+  IN_PROGRESS
+  RESOLVED
+  CLOSED
+}
+
+enum TicketPriority {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum Department {
+  HR
+  IT
+}
+
+enum RequestType {
+  ASSET
+  SERVICE
+}
+
+enum AssetStatus {
+  AVAILABLE
+  ASSIGNED
+  MAINTENANCE
+  RETIRED
 }

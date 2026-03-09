@@ -206,9 +206,9 @@ export type UserWhereInput = {
   isActive?: Prisma.BoolFilter<"User"> | boolean
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
-  ticketsCreated?: Prisma.TicketListRelationFilter
-  ticketsAssigned?: Prisma.TicketListRelationFilter
   assetsAssigned?: Prisma.AssetListRelationFilter
+  ticketsAssigned?: Prisma.TicketListRelationFilter
+  ticketsCreated?: Prisma.TicketListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -220,9 +220,9 @@ export type UserOrderByWithRelationInput = {
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-  ticketsCreated?: Prisma.TicketOrderByRelationAggregateInput
-  ticketsAssigned?: Prisma.TicketOrderByRelationAggregateInput
   assetsAssigned?: Prisma.AssetOrderByRelationAggregateInput
+  ticketsAssigned?: Prisma.TicketOrderByRelationAggregateInput
+  ticketsCreated?: Prisma.TicketOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -237,9 +237,9 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   isActive?: Prisma.BoolFilter<"User"> | boolean
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
-  ticketsCreated?: Prisma.TicketListRelationFilter
-  ticketsAssigned?: Prisma.TicketListRelationFilter
   assetsAssigned?: Prisma.AssetListRelationFilter
+  ticketsAssigned?: Prisma.TicketListRelationFilter
+  ticketsCreated?: Prisma.TicketListRelationFilter
 }, "id" | "email">
 
 export type UserOrderByWithAggregationInput = {
@@ -279,9 +279,9 @@ export type UserCreateInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
-  ticketsCreated?: Prisma.TicketCreateNestedManyWithoutCreatedByInput
-  ticketsAssigned?: Prisma.TicketCreateNestedManyWithoutAssignedToInput
   assetsAssigned?: Prisma.AssetCreateNestedManyWithoutAssignedToInput
+  ticketsAssigned?: Prisma.TicketCreateNestedManyWithoutAssignedToInput
+  ticketsCreated?: Prisma.TicketCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -293,9 +293,9 @@ export type UserUncheckedCreateInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
-  ticketsCreated?: Prisma.TicketUncheckedCreateNestedManyWithoutCreatedByInput
-  ticketsAssigned?: Prisma.TicketUncheckedCreateNestedManyWithoutAssignedToInput
   assetsAssigned?: Prisma.AssetUncheckedCreateNestedManyWithoutAssignedToInput
+  ticketsAssigned?: Prisma.TicketUncheckedCreateNestedManyWithoutAssignedToInput
+  ticketsCreated?: Prisma.TicketUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUpdateInput = {
@@ -307,9 +307,9 @@ export type UserUpdateInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  ticketsCreated?: Prisma.TicketUpdateManyWithoutCreatedByNestedInput
-  ticketsAssigned?: Prisma.TicketUpdateManyWithoutAssignedToNestedInput
   assetsAssigned?: Prisma.AssetUpdateManyWithoutAssignedToNestedInput
+  ticketsAssigned?: Prisma.TicketUpdateManyWithoutAssignedToNestedInput
+  ticketsCreated?: Prisma.TicketUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -321,9 +321,9 @@ export type UserUncheckedUpdateInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  ticketsCreated?: Prisma.TicketUncheckedUpdateManyWithoutCreatedByNestedInput
-  ticketsAssigned?: Prisma.TicketUncheckedUpdateManyWithoutAssignedToNestedInput
   assetsAssigned?: Prisma.AssetUncheckedUpdateManyWithoutAssignedToNestedInput
+  ticketsAssigned?: Prisma.TicketUncheckedUpdateManyWithoutAssignedToNestedInput
+  ticketsCreated?: Prisma.TicketUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -392,14 +392,14 @@ export type UserMinOrderByAggregateInput = {
   updatedAt?: Prisma.SortOrder
 }
 
-export type UserScalarRelationFilter = {
-  is?: Prisma.UserWhereInput
-  isNot?: Prisma.UserWhereInput
-}
-
 export type UserNullableScalarRelationFilter = {
   is?: Prisma.UserWhereInput | null
   isNot?: Prisma.UserWhereInput | null
+}
+
+export type UserScalarRelationFilter = {
+  is?: Prisma.UserWhereInput
+  isNot?: Prisma.UserWhereInput
 }
 
 export type StringFieldUpdateOperationsInput = {
@@ -418,24 +418,16 @@ export type DateTimeFieldUpdateOperationsInput = {
   set?: Date | string
 }
 
-export type UserCreateNestedOneWithoutTicketsCreatedInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutTicketsCreatedInput, Prisma.UserUncheckedCreateWithoutTicketsCreatedInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutTicketsCreatedInput
-  connect?: Prisma.UserWhereUniqueInput
-}
-
 export type UserCreateNestedOneWithoutTicketsAssignedInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutTicketsAssignedInput, Prisma.UserUncheckedCreateWithoutTicketsAssignedInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutTicketsAssignedInput
   connect?: Prisma.UserWhereUniqueInput
 }
 
-export type UserUpdateOneRequiredWithoutTicketsCreatedNestedInput = {
+export type UserCreateNestedOneWithoutTicketsCreatedInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutTicketsCreatedInput, Prisma.UserUncheckedCreateWithoutTicketsCreatedInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutTicketsCreatedInput
-  upsert?: Prisma.UserUpsertWithoutTicketsCreatedInput
   connect?: Prisma.UserWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutTicketsCreatedInput, Prisma.UserUpdateWithoutTicketsCreatedInput>, Prisma.UserUncheckedUpdateWithoutTicketsCreatedInput>
 }
 
 export type UserUpdateOneWithoutTicketsAssignedNestedInput = {
@@ -446,6 +438,14 @@ export type UserUpdateOneWithoutTicketsAssignedNestedInput = {
   delete?: Prisma.UserWhereInput | boolean
   connect?: Prisma.UserWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutTicketsAssignedInput, Prisma.UserUpdateWithoutTicketsAssignedInput>, Prisma.UserUncheckedUpdateWithoutTicketsAssignedInput>
+}
+
+export type UserUpdateOneRequiredWithoutTicketsCreatedNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutTicketsCreatedInput, Prisma.UserUncheckedCreateWithoutTicketsCreatedInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutTicketsCreatedInput
+  upsert?: Prisma.UserUpsertWithoutTicketsCreatedInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutTicketsCreatedInput, Prisma.UserUpdateWithoutTicketsCreatedInput>, Prisma.UserUncheckedUpdateWithoutTicketsCreatedInput>
 }
 
 export type UserCreateNestedOneWithoutAssetsAssignedInput = {
@@ -464,37 +464,6 @@ export type UserUpdateOneWithoutAssetsAssignedNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutAssetsAssignedInput, Prisma.UserUpdateWithoutAssetsAssignedInput>, Prisma.UserUncheckedUpdateWithoutAssetsAssignedInput>
 }
 
-export type UserCreateWithoutTicketsCreatedInput = {
-  id?: string
-  name: string
-  email: string
-  password: string
-  role: $Enums.Role
-  isActive?: boolean
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  ticketsAssigned?: Prisma.TicketCreateNestedManyWithoutAssignedToInput
-  assetsAssigned?: Prisma.AssetCreateNestedManyWithoutAssignedToInput
-}
-
-export type UserUncheckedCreateWithoutTicketsCreatedInput = {
-  id?: string
-  name: string
-  email: string
-  password: string
-  role: $Enums.Role
-  isActive?: boolean
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  ticketsAssigned?: Prisma.TicketUncheckedCreateNestedManyWithoutAssignedToInput
-  assetsAssigned?: Prisma.AssetUncheckedCreateNestedManyWithoutAssignedToInput
-}
-
-export type UserCreateOrConnectWithoutTicketsCreatedInput = {
-  where: Prisma.UserWhereUniqueInput
-  create: Prisma.XOR<Prisma.UserCreateWithoutTicketsCreatedInput, Prisma.UserUncheckedCreateWithoutTicketsCreatedInput>
-}
-
 export type UserCreateWithoutTicketsAssignedInput = {
   id?: string
   name: string
@@ -504,8 +473,8 @@ export type UserCreateWithoutTicketsAssignedInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
-  ticketsCreated?: Prisma.TicketCreateNestedManyWithoutCreatedByInput
   assetsAssigned?: Prisma.AssetCreateNestedManyWithoutAssignedToInput
+  ticketsCreated?: Prisma.TicketCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutTicketsAssignedInput = {
@@ -517,8 +486,8 @@ export type UserUncheckedCreateWithoutTicketsAssignedInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
-  ticketsCreated?: Prisma.TicketUncheckedCreateNestedManyWithoutCreatedByInput
   assetsAssigned?: Prisma.AssetUncheckedCreateNestedManyWithoutAssignedToInput
+  ticketsCreated?: Prisma.TicketUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutTicketsAssignedInput = {
@@ -526,41 +495,35 @@ export type UserCreateOrConnectWithoutTicketsAssignedInput = {
   create: Prisma.XOR<Prisma.UserCreateWithoutTicketsAssignedInput, Prisma.UserUncheckedCreateWithoutTicketsAssignedInput>
 }
 
-export type UserUpsertWithoutTicketsCreatedInput = {
-  update: Prisma.XOR<Prisma.UserUpdateWithoutTicketsCreatedInput, Prisma.UserUncheckedUpdateWithoutTicketsCreatedInput>
+export type UserCreateWithoutTicketsCreatedInput = {
+  id?: string
+  name: string
+  email: string
+  password: string
+  role: $Enums.Role
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  assetsAssigned?: Prisma.AssetCreateNestedManyWithoutAssignedToInput
+  ticketsAssigned?: Prisma.TicketCreateNestedManyWithoutAssignedToInput
+}
+
+export type UserUncheckedCreateWithoutTicketsCreatedInput = {
+  id?: string
+  name: string
+  email: string
+  password: string
+  role: $Enums.Role
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  assetsAssigned?: Prisma.AssetUncheckedCreateNestedManyWithoutAssignedToInput
+  ticketsAssigned?: Prisma.TicketUncheckedCreateNestedManyWithoutAssignedToInput
+}
+
+export type UserCreateOrConnectWithoutTicketsCreatedInput = {
+  where: Prisma.UserWhereUniqueInput
   create: Prisma.XOR<Prisma.UserCreateWithoutTicketsCreatedInput, Prisma.UserUncheckedCreateWithoutTicketsCreatedInput>
-  where?: Prisma.UserWhereInput
-}
-
-export type UserUpdateToOneWithWhereWithoutTicketsCreatedInput = {
-  where?: Prisma.UserWhereInput
-  data: Prisma.XOR<Prisma.UserUpdateWithoutTicketsCreatedInput, Prisma.UserUncheckedUpdateWithoutTicketsCreatedInput>
-}
-
-export type UserUpdateWithoutTicketsCreatedInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  password?: Prisma.StringFieldUpdateOperationsInput | string
-  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
-  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  ticketsAssigned?: Prisma.TicketUpdateManyWithoutAssignedToNestedInput
-  assetsAssigned?: Prisma.AssetUpdateManyWithoutAssignedToNestedInput
-}
-
-export type UserUncheckedUpdateWithoutTicketsCreatedInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  password?: Prisma.StringFieldUpdateOperationsInput | string
-  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
-  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  ticketsAssigned?: Prisma.TicketUncheckedUpdateManyWithoutAssignedToNestedInput
-  assetsAssigned?: Prisma.AssetUncheckedUpdateManyWithoutAssignedToNestedInput
 }
 
 export type UserUpsertWithoutTicketsAssignedInput = {
@@ -583,8 +546,8 @@ export type UserUpdateWithoutTicketsAssignedInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  ticketsCreated?: Prisma.TicketUpdateManyWithoutCreatedByNestedInput
   assetsAssigned?: Prisma.AssetUpdateManyWithoutAssignedToNestedInput
+  ticketsCreated?: Prisma.TicketUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTicketsAssignedInput = {
@@ -596,8 +559,45 @@ export type UserUncheckedUpdateWithoutTicketsAssignedInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  ticketsCreated?: Prisma.TicketUncheckedUpdateManyWithoutCreatedByNestedInput
   assetsAssigned?: Prisma.AssetUncheckedUpdateManyWithoutAssignedToNestedInput
+  ticketsCreated?: Prisma.TicketUncheckedUpdateManyWithoutCreatedByNestedInput
+}
+
+export type UserUpsertWithoutTicketsCreatedInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutTicketsCreatedInput, Prisma.UserUncheckedUpdateWithoutTicketsCreatedInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutTicketsCreatedInput, Prisma.UserUncheckedCreateWithoutTicketsCreatedInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutTicketsCreatedInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutTicketsCreatedInput, Prisma.UserUncheckedUpdateWithoutTicketsCreatedInput>
+}
+
+export type UserUpdateWithoutTicketsCreatedInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  assetsAssigned?: Prisma.AssetUpdateManyWithoutAssignedToNestedInput
+  ticketsAssigned?: Prisma.TicketUpdateManyWithoutAssignedToNestedInput
+}
+
+export type UserUncheckedUpdateWithoutTicketsCreatedInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  assetsAssigned?: Prisma.AssetUncheckedUpdateManyWithoutAssignedToNestedInput
+  ticketsAssigned?: Prisma.TicketUncheckedUpdateManyWithoutAssignedToNestedInput
 }
 
 export type UserCreateWithoutAssetsAssignedInput = {
@@ -609,8 +609,8 @@ export type UserCreateWithoutAssetsAssignedInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
-  ticketsCreated?: Prisma.TicketCreateNestedManyWithoutCreatedByInput
   ticketsAssigned?: Prisma.TicketCreateNestedManyWithoutAssignedToInput
+  ticketsCreated?: Prisma.TicketCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutAssetsAssignedInput = {
@@ -622,8 +622,8 @@ export type UserUncheckedCreateWithoutAssetsAssignedInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
-  ticketsCreated?: Prisma.TicketUncheckedCreateNestedManyWithoutCreatedByInput
   ticketsAssigned?: Prisma.TicketUncheckedCreateNestedManyWithoutAssignedToInput
+  ticketsCreated?: Prisma.TicketUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutAssetsAssignedInput = {
@@ -651,8 +651,8 @@ export type UserUpdateWithoutAssetsAssignedInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  ticketsCreated?: Prisma.TicketUpdateManyWithoutCreatedByNestedInput
   ticketsAssigned?: Prisma.TicketUpdateManyWithoutAssignedToNestedInput
+  ticketsCreated?: Prisma.TicketUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAssetsAssignedInput = {
@@ -664,8 +664,8 @@ export type UserUncheckedUpdateWithoutAssetsAssignedInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  ticketsCreated?: Prisma.TicketUncheckedUpdateManyWithoutCreatedByNestedInput
   ticketsAssigned?: Prisma.TicketUncheckedUpdateManyWithoutAssignedToNestedInput
+  ticketsCreated?: Prisma.TicketUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 
@@ -674,15 +674,15 @@ export type UserUncheckedUpdateWithoutAssetsAssignedInput = {
  */
 
 export type UserCountOutputType = {
-  ticketsCreated: number
-  ticketsAssigned: number
   assetsAssigned: number
+  ticketsAssigned: number
+  ticketsCreated: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  ticketsCreated?: boolean | UserCountOutputTypeCountTicketsCreatedArgs
-  ticketsAssigned?: boolean | UserCountOutputTypeCountTicketsAssignedArgs
   assetsAssigned?: boolean | UserCountOutputTypeCountAssetsAssignedArgs
+  ticketsAssigned?: boolean | UserCountOutputTypeCountTicketsAssignedArgs
+  ticketsCreated?: boolean | UserCountOutputTypeCountTicketsCreatedArgs
 }
 
 /**
@@ -698,8 +698,8 @@ export type UserCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensi
 /**
  * UserCountOutputType without action
  */
-export type UserCountOutputTypeCountTicketsCreatedArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.TicketWhereInput
+export type UserCountOutputTypeCountAssetsAssignedArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.AssetWhereInput
 }
 
 /**
@@ -712,8 +712,8 @@ export type UserCountOutputTypeCountTicketsAssignedArgs<ExtArgs extends runtime.
 /**
  * UserCountOutputType without action
  */
-export type UserCountOutputTypeCountAssetsAssignedArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.AssetWhereInput
+export type UserCountOutputTypeCountTicketsCreatedArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.TicketWhereInput
 }
 
 
@@ -726,9 +726,9 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  ticketsCreated?: boolean | Prisma.User$ticketsCreatedArgs<ExtArgs>
-  ticketsAssigned?: boolean | Prisma.User$ticketsAssignedArgs<ExtArgs>
   assetsAssigned?: boolean | Prisma.User$assetsAssignedArgs<ExtArgs>
+  ticketsAssigned?: boolean | Prisma.User$ticketsAssignedArgs<ExtArgs>
+  ticketsCreated?: boolean | Prisma.User$ticketsCreatedArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -767,9 +767,9 @@ export type UserSelectScalar = {
 
 export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "email" | "password" | "role" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  ticketsCreated?: boolean | Prisma.User$ticketsCreatedArgs<ExtArgs>
-  ticketsAssigned?: boolean | Prisma.User$ticketsAssignedArgs<ExtArgs>
   assetsAssigned?: boolean | Prisma.User$assetsAssignedArgs<ExtArgs>
+  ticketsAssigned?: boolean | Prisma.User$ticketsAssignedArgs<ExtArgs>
+  ticketsCreated?: boolean | Prisma.User$ticketsCreatedArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -778,9 +778,9 @@ export type UserIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
 export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "User"
   objects: {
-    ticketsCreated: Prisma.$TicketPayload<ExtArgs>[]
-    ticketsAssigned: Prisma.$TicketPayload<ExtArgs>[]
     assetsAssigned: Prisma.$AssetPayload<ExtArgs>[]
+    ticketsAssigned: Prisma.$TicketPayload<ExtArgs>[]
+    ticketsCreated: Prisma.$TicketPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1185,9 +1185,9 @@ readonly fields: UserFieldRefs;
  */
 export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  ticketsCreated<T extends Prisma.User$ticketsCreatedArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$ticketsCreatedArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TicketPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  ticketsAssigned<T extends Prisma.User$ticketsAssignedArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$ticketsAssignedArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TicketPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   assetsAssigned<T extends Prisma.User$assetsAssignedArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$assetsAssignedArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AssetPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  ticketsAssigned<T extends Prisma.User$ticketsAssignedArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$ticketsAssignedArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TicketPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  ticketsCreated<T extends Prisma.User$ticketsCreatedArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$ticketsCreatedArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TicketPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1613,27 +1613,27 @@ export type UserDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Internal
 }
 
 /**
- * User.ticketsCreated
+ * User.assetsAssigned
  */
-export type User$ticketsCreatedArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type User$assetsAssignedArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the Ticket
+   * Select specific fields to fetch from the Asset
    */
-  select?: Prisma.TicketSelect<ExtArgs> | null
+  select?: Prisma.AssetSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the Ticket
+   * Omit specific fields from the Asset
    */
-  omit?: Prisma.TicketOmit<ExtArgs> | null
+  omit?: Prisma.AssetOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.TicketInclude<ExtArgs> | null
-  where?: Prisma.TicketWhereInput
-  orderBy?: Prisma.TicketOrderByWithRelationInput | Prisma.TicketOrderByWithRelationInput[]
-  cursor?: Prisma.TicketWhereUniqueInput
+  include?: Prisma.AssetInclude<ExtArgs> | null
+  where?: Prisma.AssetWhereInput
+  orderBy?: Prisma.AssetOrderByWithRelationInput | Prisma.AssetOrderByWithRelationInput[]
+  cursor?: Prisma.AssetWhereUniqueInput
   take?: number
   skip?: number
-  distinct?: Prisma.TicketScalarFieldEnum | Prisma.TicketScalarFieldEnum[]
+  distinct?: Prisma.AssetScalarFieldEnum | Prisma.AssetScalarFieldEnum[]
 }
 
 /**
@@ -1661,27 +1661,27 @@ export type User$ticketsAssignedArgs<ExtArgs extends runtime.Types.Extensions.In
 }
 
 /**
- * User.assetsAssigned
+ * User.ticketsCreated
  */
-export type User$assetsAssignedArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type User$ticketsCreatedArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the Asset
+   * Select specific fields to fetch from the Ticket
    */
-  select?: Prisma.AssetSelect<ExtArgs> | null
+  select?: Prisma.TicketSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the Asset
+   * Omit specific fields from the Ticket
    */
-  omit?: Prisma.AssetOmit<ExtArgs> | null
+  omit?: Prisma.TicketOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.AssetInclude<ExtArgs> | null
-  where?: Prisma.AssetWhereInput
-  orderBy?: Prisma.AssetOrderByWithRelationInput | Prisma.AssetOrderByWithRelationInput[]
-  cursor?: Prisma.AssetWhereUniqueInput
+  include?: Prisma.TicketInclude<ExtArgs> | null
+  where?: Prisma.TicketWhereInput
+  orderBy?: Prisma.TicketOrderByWithRelationInput | Prisma.TicketOrderByWithRelationInput[]
+  cursor?: Prisma.TicketWhereUniqueInput
   take?: number
   skip?: number
-  distinct?: Prisma.AssetScalarFieldEnum | Prisma.AssetScalarFieldEnum[]
+  distinct?: Prisma.TicketScalarFieldEnum | Prisma.TicketScalarFieldEnum[]
 }
 
 /**

@@ -19,7 +19,7 @@ async function main() {
   await prisma.user.deleteMany();
 
   // Create Users
-  console.log('👥 Creating users...');
+  console.log('Creating users...');
 
   const admin = await prisma.user.create({
     data: {

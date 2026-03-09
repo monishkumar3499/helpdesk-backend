@@ -17,10 +17,10 @@ import type * as Prisma from "./prismaNamespace.js"
 
 const config: runtime.GetPrismaClientConfig = {
   "previewFeatures": [],
-  "clientVersion": "7.4.1",
-  "engineVersion": "55ae170b1ced7fc6ed07a15f110549408c501bb3",
+  "clientVersion": "7.4.2",
+  "engineVersion": "94a226be1cf2967af2541cca5529f0f7ba866919",
   "activeProvider": "postgresql",
-  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?\n// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init\n\ngenerator client {\n  provider     = \"prisma-client\"\n  output       = \"../src/generated/prisma\"\n  moduleFormat = \"cjs\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n}\n\n//////////////////////\n// ENUMS\n//////////////////////\n\nenum Role {\n  EMPLOYEE\n  HR\n  IT\n  ADMIN\n}\n\nenum TicketStatus {\n  OPEN\n  IN_PROGRESS\n  RESOLVED\n}\n\nenum TicketPriority {\n  CRITICAL\n  HIGH\n  LOW\n}\n\nenum Department {\n  HR\n  IT\n}\n\nenum AssetStatus {\n  AVAILABLE\n  ASSIGNED\n  MAINTENANCE\n  RETIRED\n}\n\n//////////////////////\n// USERS (AUTH)\n//////////////////////\n\nmodel User {\n  id       String  @id @default(nanoid(10))\n  name     String\n  email    String  @unique\n  password String\n  role     Role\n  isActive Boolean @default(true)\n\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  // relations\n  ticketsCreated  Ticket[] @relation(\"TicketCreator\")\n  ticketsAssigned Ticket[] @relation(\"TicketAssignee\")\n  assetsAssigned  Asset[]  @relation(\"AssetOwner\")\n\n  @@index([email])\n  @@index([role])\n}\n\n//////////////////////\n// TICKETS\n//////////////////////\n\nmodel Ticket {\n  id       String  @id @default(nanoid(10))\n  title    String\n  summary  String\n  imageUrl String?\n\n  status     TicketStatus   @default(OPEN)\n  priority   TicketPriority @default(LOW)\n  department Department\n\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  // 🔹 creator\n  createdById String\n  createdBy   User   @relation(\"TicketCreator\", fields: [createdById], references: [id])\n\n  // 🔹 assignee (HR or IT)\n  assignedToId String?\n  assignedTo   User?   @relation(\"TicketAssignee\", fields: [assignedToId], references: [id])\n\n  @@index([status])\n  @@index([priority])\n  @@index([department])\n  @@index([createdById])\n  @@index([assignedToId])\n}\n\n//////////////////////\n// ASSETS (MINIMAL)\n//////////////////////\n\nmodel Asset {\n  id           String      @id @default(uuid())\n  serialNumber String      @unique // human readable like AST-001\n  assetName    String\n  assetType    String\n  assetStatus  AssetStatus @default(AVAILABLE)\n\n  assignedToId String?\n  assignedTo   User?   @relation(\"AssetOwner\", fields: [assignedToId], references: [id])\n\n  assignedDate DateTime?\n\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  @@index([assetStatus])\n  @@index([assetType])\n  @@index([assignedToId])\n}\n",
+  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?\n// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init\n\ngenerator client {\n  provider     = \"prisma-client\"\n  output       = \"../src/generated/prisma\"\n  moduleFormat = \"cjs\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n}\n\n// Enums\n\nenum Role {\n  EMPLOYEE\n  HR\n  IT\n  ADMIN\n}\n\nenum TicketStatus {\n  OPEN\n  IN_PROGRESS\n  RESOLVED\n}\n\nenum TicketPriority {\n  CRITICAL\n  HIGH\n  LOW\n}\n\nenum Department {\n  HR\n  IT\n}\n\nenum AssetStatus {\n  AVAILABLE\n  ASSIGNED\n  MAINTENANCE\n  RETIRED\n}\n\n// Users(Authenticate)\n\nmodel User {\n  id       String  @id @default(nanoid(10))\n  name     String\n  email    String  @unique\n  password String\n  role     Role\n  isActive Boolean @default(true)\n\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  // relations\n  ticketsCreated  Ticket[] @relation(\"TicketCreator\")\n  ticketsAssigned Ticket[] @relation(\"TicketAssignee\")\n  assetsAssigned  Asset[]  @relation(\"AssetOwner\")\n\n  @@index([email])\n  @@index([role])\n}\n\n// Tickets\n\nmodel Ticket {\n  id       String  @id @default(nanoid(10))\n  title    String\n  summary  String\n  imageUrl String?\n\n  status     TicketStatus   @default(OPEN)\n  priority   TicketPriority @default(LOW)\n  department Department\n\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  // creator\n  createdById String\n  createdBy   User   @relation(\"TicketCreator\", fields: [createdById], references: [id])\n\n  // assignee (HR or IT)\n  assignedToId String?\n  assignedTo   User?   @relation(\"TicketAssignee\", fields: [assignedToId], references: [id])\n\n  @@index([status])\n  @@index([priority])\n  @@index([department])\n  @@index([createdById])\n  @@index([assignedToId])\n}\n\n// ASSETS\n\nmodel Asset {\n  id           String      @id @default(uuid())\n  serialNumber String      @unique\n  assetName    String\n  assetType    String\n  assetStatus  AssetStatus @default(AVAILABLE)\n\n  assignedToId String?\n  assignedTo   User?   @relation(\"AssetOwner\", fields: [assignedToId], references: [id])\n\n  assignedDate DateTime?\n\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  @@index([assetStatus])\n  @@index([assetType])\n  @@index([assignedToId])\n}\n",
   "runtimeDataModel": {
     "models": {},
     "enums": {},
@@ -67,7 +67,9 @@ export interface PrismaClientConstructor {
    * Type-safe database client for TypeScript
    * @example
    * ```
-   * const prisma = new PrismaClient()
+   * const prisma = new PrismaClient({
+   *   adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL })
+   * })
    * // Fetch zero or more Users
    * const users = await prisma.user.findMany()
    * ```
@@ -89,7 +91,9 @@ export interface PrismaClientConstructor {
  * Type-safe database client for TypeScript
  * @example
  * ```
- * const prisma = new PrismaClient()
+ * const prisma = new PrismaClient({
+ *   adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL })
+ * })
  * // Fetch zero or more Users
  * const users = await prisma.user.findMany()
  * ```

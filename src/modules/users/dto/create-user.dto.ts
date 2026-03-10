@@ -7,7 +7,7 @@ import {
   MaxLength,
   IsEnum,
 } from 'class-validator';
-import { Role } from 'src/generated/prisma/enums';
+import { Role } from '@prisma/client';
 
 export class CreateUserDto {
   @IsString()

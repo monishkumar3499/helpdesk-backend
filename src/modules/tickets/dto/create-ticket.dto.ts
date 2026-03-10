@@ -1,22 +1,16 @@
-import {
-  IsEnum,
-  IsNotEmpty,
-  IsOptional,
-  IsString,
-  IsUrl,
-} from 'class-validator';
-import { Department, TicketPriority } from 'src/generated/prisma/client';
+import { IsEnum, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { Department, TicketPriority } from '@prisma/client';
 
 export class CreateTicketDto {
   @IsString()
-  @IsNotEmpty({ message: 'Ticket title cannot be empty' })
+  @IsNotEmpty()
   title: string;
 
   @IsString()
   @IsNotEmpty()
   summary: string;
 
-  @IsEnum(Department, { message: 'Invalid department specified' })
+  @IsEnum(Department)
   department: Department;
 
   @IsOptional()
@@ -24,14 +18,21 @@ export class CreateTicketDto {
   priority?: TicketPriority;
 
   @IsOptional()
-  @IsUrl({}, { message: 'Image must be a valid URL' })
+  @IsString()
   imageUrl?: string;
 
-  @IsString()
-  @IsNotEmpty()
-  createdById: string;
-
-  @IsString()
   @IsOptional()
+  @IsString()
+  assetDescription?: string;
+
+  @IsOptional()
+  @IsString()
+  serviceDescription?: string;
+
+  @IsOptional()
+  @IsString()
   assignedToId?: string;
+
+  // Set by controller from JWT — not user-supplied
+  createdById?: string;
 }

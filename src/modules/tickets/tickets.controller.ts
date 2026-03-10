@@ -1,126 +1,85 @@
 import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-  Query,
-  UseInterceptors,
-  UploadedFile
-} from '@nestjs/common'
-
-import { FileInterceptor } from '@nestjs/platform-express'
-
-import { TicketsService } from './tickets.service'
-import { CreateTicketDto } from './dto/create-ticket.dto'
-import { UpdateTicketDto } from './dto/update-ticket.dto'
-
-import { TicketStatus } from '../../generated/prisma/client'
+  Controller, Get, Post, Body, Patch, Param, Delete,
+  Query, UseInterceptors, UploadedFile, UseGuards, Req,
+} from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { TicketsService } from './tickets.service';
+import { CreateTicketDto } from './dto/create-ticket.dto';
+import { UpdateTicketDto } from './dto/update-ticket.dto';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { RolesGuard } from '../auth/roles.guard';
+import { Roles } from '../auth/roles.decorator';
+import { Role, TicketStatus } from '@prisma/client';
 
 @Controller('tickets')
+@UseGuards(JwtAuthGuard, RolesGuard)
 export class TicketsController {
-
   constructor(private readonly ticketsService: TicketsService) {}
 
-  /**
-   * CREATE TICKET
-   * POST /tickets
-   * Supports image upload
-   */
-
+  // ── Create ───────────────────────────────────────────────────────────────
   @Post()
   @UseInterceptors(FileInterceptor('image'))
   async create(
     @UploadedFile() file: Express.Multer.File,
-    @Body() createTicketDto: CreateTicketDto
+    @Body() dto: CreateTicketDto,
+    @Req() req: any,
   ) {
+    if (file) dto.imageUrl = file.filename;
+    // Always use the authenticated user as the creator
+    dto.createdById = req.user.userId;
+    return this.ticketsService.create(dto);
+  }
 
-    if (file) {
-      createTicketDto.imageUrl = file.filename
+  // ── My tickets (must come before :id) ───────────────────────────────────
+  @Get('mine')
+  findMine(@Req() req: any) {
+    return this.ticketsService.findByUser(req.user.userId);
+  }
+
+  // ── All tickets (with role-based department filtering) ───────────────────
+  @Get()
+  @Roles(Role.ADMIN, Role.HR, Role.IT_ADMIN, Role.IT_SUPPORT)
+  findAll(@Req() req: any, @Query('department') department?: string) {
+    const user = req.user;
+    
+    // Admins can see anything. Others are restricted to their department.
+    if (user.role === Role.ADMIN) {
+      return this.ticketsService.findAll(department);
+    }
+    
+    if (user.role === Role.HR) {
+      return this.ticketsService.findAll('HR');
+    }
+    
+    if (user.role === Role.IT_ADMIN || user.role === Role.IT_SUPPORT) {
+      return this.ticketsService.findAll('IT');
     }
 
-    return this.ticketsService.create(createTicketDto)
+    // Default: no access or empty
+    return { data: [] };
   }
 
-
-  /**
-   * GET ALL TICKETS
-   * GET /tickets
-   * Optional query:
-   * /tickets?department=IT
-   */
-
-  @Get()
-  async findAll(
-    @Query('department') department?: string
-  ) {
-
-    return this.ticketsService.findAll(department)
-
-  }
-
-
-  /**
-   * GET SINGLE TICKET
-   * GET /tickets/:id
-   */
-
+  // ── Single ticket ─────────────────────────────────────────────────────────
   @Get(':id')
-  async findOne(
-    @Param('id') id: string
-  ) {
-
-    return this.ticketsService.findOne(id)
-
+  findOne(@Param('id') id: string) {
+    return this.ticketsService.findOne(id);
   }
 
-
-  /**
-   * UPDATE TICKET
-   * PATCH /tickets/:id
-   */
-
+  // ── Update ────────────────────────────────────────────────────────────────
   @Patch(':id')
-  async update(
-    @Param('id') id: string,
-    @Body() updateTicketDto: UpdateTicketDto
-  ) {
-
-    return this.ticketsService.update(id, updateTicketDto)
-
+  update(@Param('id') id: string, @Body() dto: UpdateTicketDto) {
+    return this.ticketsService.update(id, dto);
   }
 
-
-  /**
-   * UPDATE ONLY STATUS
-   * PATCH /tickets/:id/status
-   */
-
+  // ── Status-only update ────────────────────────────────────────────────────
   @Patch(':id/status')
-  async updateStatus(
-    @Param('id') id: string,
-    @Body('status') status: TicketStatus
-  ) {
-
-    return this.ticketsService.updateStatus(id, status)
-
+  updateStatus(@Param('id') id: string, @Body('status') status: TicketStatus) {
+    return this.ticketsService.updateStatus(id, status);
   }
 
-
-  /**
-   * DELETE TICKET
-   * DELETE /tickets/:id
-   */
-
+  // ── Delete ────────────────────────────────────────────────────────────────
   @Delete(':id')
-  async remove(
-    @Param('id') id: string
-  ) {
-
-    return this.ticketsService.remove(id)
-
+  remove(@Param('id') id: string) {
+    return this.ticketsService.remove(id);
   }
-
 }

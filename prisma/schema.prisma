@@ -13,15 +13,31 @@ model User {
   password        String
   role            Role
   isActive        Boolean  @default(true)
+  
+  // Profile Information
+  phoneNumber     String?
+  employeeId      String?   @unique
+  jobTitle        String?
+  department      String?   // Employee's actual department (e.g., Marketing, Sales)
+  profileImage    String?
+  joiningDate     DateTime? @default(now())
+
+  // Management Info
+  managerId       String?
+  manager         User?     @relation("UserManager", fields: [managerId], references: [id])
+  reportees       User[]    @relation("UserManager")
+
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 
   assetsAssigned  Asset[]  @relation("AssetOwner")
   ticketsAssigned Ticket[] @relation("TicketAssignee")
   ticketsCreated  Ticket[] @relation("TicketCreator")
+  comments        TicketComment[]
 
   @@index([email])
   @@index([role])
+  @@index([managerId])
 }
 
 model Ticket {
@@ -29,17 +45,22 @@ model Ticket {
   ticketNumber Int            @default(autoincrement())
 
   title        String
-  summary      String
+  summary      String         // Short summary/heading
+  description  String?        // Detailed breakdown
   imageUrl     String?
 
   status       TicketStatus   @default(OPEN)
   priority     TicketPriority @default(LOW)
-  department   Department
+  department   Department     // HR or IT (assigned service)
 
-  // NEW FIELDS
+  // Specific Request Details
   requestType         RequestType?
   assetDescription    String?
   serviceDescription  String?
+  
+  // Resolution Info
+  resolvedAt   DateTime?
+  closedAt     DateTime?
 
   createdAt    DateTime       @default(now())
   updatedAt    DateTime       @updatedAt
@@ -47,14 +68,30 @@ model Ticket {
   createdById  String
   assignedToId String?
 
-  createdBy    User  @relation("TicketCreator", fields: [createdById], references: [id], onDelete: Cascade)
-  assignedTo   User? @relation("TicketAssignee", fields: [assignedToId], references: [id])
+  createdBy    User            @relation("TicketCreator", fields: [createdById], references: [id], onDelete: Cascade)
+  assignedTo   User?           @relation("TicketAssignee", fields: [assignedToId], references: [id])
+  comments     TicketComment[]
 
   @@index([status])
   @@index([priority])
   @@index([department])
   @@index([createdById])
   @@index([assignedToId])
+}
+
+model TicketComment {
+  id        String   @id @default(nanoid(10))
+  content   String
+  createdAt DateTime @default(now())
+  
+  ticketId  String
+  userId    String
+  
+  ticket    Ticket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  user      User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@index([ticketId])
+  @@index([userId])
 }
 
 model Asset {
@@ -82,13 +119,15 @@ model Asset {
 enum Role {
   EMPLOYEE
   HR
-  IT
+  IT_SUPPORT
+  IT_ADMIN
   ADMIN
 }
 
 enum TicketStatus {
   OPEN
   IN_PROGRESS
+  ON_HOLD
   RESOLVED
   CLOSED
 }
@@ -103,6 +142,10 @@ enum TicketPriority {
 enum Department {
   HR
   IT
+  FINANCE
+  MARKETING
+  OPERATIONS
+  FACILITIES
 }
 
 enum RequestType {

@@ -1,8 +1,8 @@
 import {
+  TicketStatus,
   Department,
   TicketPriority,
-  TicketStatus,
-} from 'src/generated/prisma/enums';
+} from '@prisma/client';
 
 // Types for filtering the inputs
 export interface GetTicketsFilterDto {

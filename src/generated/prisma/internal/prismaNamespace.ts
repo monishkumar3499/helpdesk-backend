@@ -851,7 +851,7 @@ export type TicketScalarFieldEnum = (typeof TicketScalarFieldEnum)[keyof typeof 
 export const AssetIssueScalarFieldEnum = {
   id: 'id',
   ticketId: 'ticketId',
-  assetId: 'assetId',
+  assetSerialNumber: 'assetSerialNumber',
   assetCategory: 'assetCategory',
   assetClassification: 'assetClassification',
   requestedAssetName: 'requestedAssetName',

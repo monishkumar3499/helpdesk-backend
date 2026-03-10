@@ -25,7 +25,7 @@ import { CurrentUser } from '../auth/decorators/current-user.decorator';
 export class AssetsController {
   constructor(private readonly assetsService: AssetsService) {}
 
-  @Roles(Role.IT_SUPPORT, Role.IT_ADMIN)
+  @Roles(Role.IT_ADMIN)
   @Post()
   create(@Body() dto: CreateAssetDto) {
     return this.assetsService.create(dto);
@@ -36,28 +36,34 @@ export class AssetsController {
     return this.assetsService.getMyAssets(userId);
   }
 
-  @Roles(Role.HR, Role.IT_SUPPORT, Role.IT_ADMIN)
+  @Roles(Role.IT_SUPPORT, Role.IT_ADMIN)
   @Get()
   findAll(@Query() filter: FilterAssetDto) {
     return this.assetsService.findAll(filter);
   }
 
-  @Roles(Role.HR, Role.IT_SUPPORT, Role.IT_ADMIN)
+  @Roles(Role.IT_SUPPORT, Role.IT_ADMIN)
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.assetsService.findOne(id);
   }
 
-  @Roles(Role.IT_SUPPORT, Role.IT_ADMIN)
+  @Roles(Role.IT_SUPPORT)
   @Patch(':id')
   update(@Param('id') id: string, @Body() dto: UpdateAssetDto) {
     return this.assetsService.update(id, dto);
   }
 
-  @Roles(Role.IT_SUPPORT, Role.IT_ADMIN)
+  @Roles(Role.IT_SUPPORT)
   @Post(':id/assign')
   assign(@Param('id') id: string, @Body() dto: AssignAssetDto) {
     return this.assetsService.assign(id, dto);
+  }
+
+  @Roles(Role.EMPLOYEE)
+  @Post(':id/return')
+  returnAsset(@Param('id') id: string) {
+    return this.assetsService.returnAsset(id);
   }
 
   @Roles(Role.IT_ADMIN)

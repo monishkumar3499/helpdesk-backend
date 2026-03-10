@@ -128,9 +128,9 @@ model AssetIssue {
   ticketId            String   @unique
   ticket              Ticket   @relation(fields: [ticketId], references: [id], onDelete: Cascade)
 
-  // Optional requested asset reference and free-text descriptors
-  assetId             String?
-  asset               Asset?   @relation(fields: [assetId], references: [id])
+  // Optional requested asset reference by business serial number
+  assetSerialNumber   String?
+  asset               Asset?   @relation(fields: [assetSerialNumber], references: [serialNumber], onDelete: SetNull)
   assetCategory       String?
   assetClassification String?
   requestedAssetName String?
@@ -138,7 +138,7 @@ model AssetIssue {
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt
 
-  @@index([assetId])
+  @@index([assetSerialNumber])
 }
 
 //////////////////////

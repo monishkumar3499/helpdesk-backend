@@ -114,13 +114,59 @@ export class AssetsService {
     return asset;
   }
 
+  async findBySerialNumber(serialNumber: string) {
+    const asset = await this.prisma.asset.findUnique({
+      where: { serialNumber },
+      include: {
+        assignedTo: { select: userSelect },
+        assetAssignments: {
+          include: {
+            assignedBy: { select: userSelect },
+            assignedTo: { select: userSelect },
+          },
+          orderBy: { assignedAt: 'desc' },
+        },
+      },
+    });
+
+    if (!asset)
+      throw new NotFoundException(
+        `Asset with serial number ${serialNumber} not found`,
+      );
+    return asset;
+  }
+
   async update(id: string, dto: UpdateAssetDto) {
     await this.ensureAssetExists(id);
 
-    // Removed the bad logic block that forced assetStatus!
+    if (dto.assignedToId !== undefined) {
+      const normalizedAssignedToId = dto.assignedToId.trim();
+      if (!normalizedAssignedToId) {
+        throw new BadRequestException(
+          'assignedToId cannot be empty. Use return endpoint to unassign asset.',
+        );
+      }
+
+      const user = await this.prisma.user.findUnique({
+        where: { id: normalizedAssignedToId },
+      });
+      if (!user) throw new BadRequestException('assignedToId user not found');
+
+      return this.prisma.asset.update({
+        where: { id },
+        data: {
+          ...dto,
+          assignedToId: normalizedAssignedToId,
+          assignedDate: new Date(),
+          assetStatus: AssetStatus.ASSIGNED,
+        },
+        include: { assignedTo: { select: userSelect } },
+      });
+    }
+
     return this.prisma.asset.update({
       where: { id },
-      data: dto, // Now handles partial updates perfectly
+      data: dto,
       include: { assignedTo: { select: userSelect } },
     });
   }
@@ -172,6 +218,20 @@ export class AssetsService {
     return this.prisma.$transaction(async (tx) => {
       await tx.assetAssignment.deleteMany({ where: { assetId: id } });
       return tx.asset.delete({ where: { id } });
+    });
+  }
+
+  async returnAsset(id: string) {
+    await this.ensureAssetExists(id);
+
+    return this.prisma.asset.update({
+      where: { id },
+      data: {
+        assignedToId: null,
+        assignedDate: null,
+        assetStatus: AssetStatus.AVAILABLE,
+      },
+      include: { assignedTo: { select: userSelect } },
     });
   }
 

@@ -342,7 +342,7 @@ async function main() {
         assetIssue: ticket.assetIssue
           ? {
               create: {
-                assetId: issueAsset?.id,
+                assetSerialNumber: issueAsset?.serialNumber,
                 assetCategory: ticket.assetIssue.assetCategory,
                 assetClassification: ticket.assetIssue.assetClassification,
                 requestedAssetName: ticket.assetIssue.requestedAssetName,

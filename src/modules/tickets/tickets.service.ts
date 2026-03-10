@@ -1,9 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../prisma.service';
 import { CreateTicketDto } from './dto/create-ticket.dto';
 import { UpdateTicketDto } from './dto/update-ticket.dto';
 import { GetTicketsFilterDto } from './dto/filter-ticket.dto';
-import { TicketStatus } from 'src/generated/prisma/enums';
+import { Department, Role, TicketStatus } from 'src/generated/prisma/enums';
 import { AssetsService } from '../assets/assets.service';
 
 @Injectable()
@@ -36,7 +36,7 @@ export class TicketsService {
 
   private deriveIssueType(ticket: {
     assetIssue?: {
-      assetId?: string | null;
+      assetSerialNumber?: string | null;
       assetCategory?: string | null;
       assetClassification?: string | null;
       requestedAssetName?: string | null;
@@ -49,22 +49,32 @@ export class TicketsService {
     if (category === 'ASSET_PROBLEM') return 'ASSET_PROBLEM';
     if (category === 'ASSET_REQUEST') return 'ASSET_REQUEST';
 
-    const hasAssetId = this.hasText(issue.assetId);
+    const hasAssetSerialNumber = this.hasText(issue.assetSerialNumber);
     const hasRequestedAssetName = this.hasText(issue.requestedAssetName);
     const hasCategory = this.hasText(issue.assetCategory);
     const hasClassification = this.hasText(issue.assetClassification);
 
     // Matches the workflow rule: existing asset reference means this is a problem ticket.
-    if (hasAssetId && hasRequestedAssetName && hasCategory && hasClassification) {
+    if (
+      hasAssetSerialNumber &&
+      hasRequestedAssetName &&
+      hasCategory &&
+      hasClassification
+    ) {
       return 'ASSET_PROBLEM';
     }
 
-    // Matches the workflow rule: no assetId but request details means this is an asset request.
-    if (!hasAssetId && hasRequestedAssetName && hasCategory && hasClassification) {
+    // Matches the workflow rule: no assetSerialNumber but request details means this is an asset request.
+    if (
+      !hasAssetSerialNumber &&
+      hasRequestedAssetName &&
+      hasCategory &&
+      hasClassification
+    ) {
       return 'ASSET_REQUEST';
     }
 
-    if (hasAssetId) return 'ASSET_PROBLEM';
+    if (hasAssetSerialNumber) return 'ASSET_PROBLEM';
     if (hasRequestedAssetName) return 'ASSET_REQUEST';
     return 'GENERAL';
   }
@@ -99,7 +109,7 @@ export class TicketsService {
 
   private mapAssetIssueInput(dto: {
     assetIssue?: {
-      assetId?: string | null;
+      assetSerialNumber?: string | null;
       assetCategory?: string | null;
       assetClassification?: 'NETWORK' | 'SOFTWARE' | 'HARDWARE' | null;
       requestedAssetName?: string | null;
@@ -108,12 +118,71 @@ export class TicketsService {
     return dto.assetIssue;
   }
 
+  private async pickAutoAssignee(department: Department): Promise<string | null> {
+    const targetRoles =
+      department === Department.IT
+        ? [Role.IT_SUPPORT]
+        : [Role.HR];
+
+    const candidates = await this.prisma.user.findMany({
+      where: {
+        role: { in: targetRoles },
+        isActive: true,
+      },
+      select: { id: true },
+    });
+
+    if (candidates.length === 0) {
+      return null;
+    }
+
+    const candidateIds = candidates.map((c) => c.id);
+    const loadByUser = await this.prisma.ticket.groupBy({
+      by: ['assignedToId'],
+      where: {
+        assignedToId: { in: candidateIds },
+        status: { in: [TicketStatus.OPEN, TicketStatus.IN_PROGRESS] },
+      },
+      _count: { _all: true },
+      _max: { createdAt: true },
+    });
+
+    const loadMap = new Map(
+      loadByUser.map((item) => [
+        item.assignedToId as string,
+        {
+          count: item._count._all,
+          lastAssignedAt: item._max.createdAt ?? null,
+        },
+      ]),
+    );
+
+    const sorted = candidateIds
+      .map((id) => ({
+        id,
+        count: loadMap.get(id)?.count ?? 0,
+        lastAssignedAt: loadMap.get(id)?.lastAssignedAt ?? null,
+      }))
+      .sort((a, b) => {
+        if (a.count !== b.count) return a.count - b.count;
+        if (!a.lastAssignedAt && !b.lastAssignedAt) return 0;
+        if (!a.lastAssignedAt) return -1;
+        if (!b.lastAssignedAt) return 1;
+        return a.lastAssignedAt.getTime() - b.lastAssignedAt.getTime();
+      });
+
+    return sorted[0]?.id ?? null;
+  }
+
   async create(dto: CreateTicketDto) {
     const assetIssue = this.mapAssetIssueInput(dto);
 
-    if (assetIssue?.assetId) {
-      await this.assetsService.findOne(assetIssue.assetId);
+    if (assetIssue?.assetSerialNumber) {
+      await this.assetsService.findBySerialNumber(assetIssue.assetSerialNumber);
     }
+
+    const resolvedAssignedToId =
+      dto.assignedToId ?? (await this.pickAutoAssignee(dto.department));
 
     const created = await this.prisma.ticket.create({
       data: {
@@ -123,12 +192,12 @@ export class TicketsService {
         priority: dto.priority ?? 'LOW', // Default fallback
         imageUrl: dto.imageUrl,
         createdById: dto.createdById,
-        assignedToId: dto.assignedToId,
+        assignedToId: resolvedAssignedToId,
         ...(assetIssue
           ? {
               assetIssue: {
                 create: {
-                  assetId: assetIssue.assetId ?? null,
+                  assetSerialNumber: assetIssue.assetSerialNumber ?? null,
                   assetCategory: assetIssue.assetCategory ?? null,
                   assetClassification: assetIssue.assetClassification ?? null,
                   requestedAssetName: assetIssue.requestedAssetName ?? null,
@@ -205,6 +274,22 @@ export class TicketsService {
   async update(id: string, dto: UpdateTicketDto) {
     const existing = await this.findOne(id);
     const assetIssue = this.mapAssetIssueInput(dto);
+
+    if (assetIssue?.assetSerialNumber) {
+      await this.assetsService.findBySerialNumber(assetIssue.assetSerialNumber);
+    }
+
+    if (dto.assignedToId) {
+      const assignee = await this.prisma.user.findUnique({
+        where: { id: dto.assignedToId },
+        select: { id: true, role: true, isActive: true },
+      });
+
+      if (!assignee || !assignee.isActive) {
+        throw new BadRequestException('assignedToId user not found or inactive');
+      }
+    }
+
     const updated = await this.prisma.ticket.update({
       where: { id },
       data: {
@@ -225,13 +310,13 @@ export class TicketsService {
                 assetIssue: {
                   upsert: {
                     create: {
-                      assetId: assetIssue.assetId ?? null,
+                      assetSerialNumber: assetIssue.assetSerialNumber ?? null,
                       assetCategory: assetIssue.assetCategory ?? null,
                       assetClassification: assetIssue.assetClassification ?? null,
                       requestedAssetName: assetIssue.requestedAssetName ?? null,
                     },
                     update: {
-                      assetId: assetIssue.assetId ?? null,
+                      assetSerialNumber: assetIssue.assetSerialNumber ?? null,
                       assetCategory: assetIssue.assetCategory ?? null,
                       assetClassification: assetIssue.assetClassification ?? null,
                       requestedAssetName: assetIssue.requestedAssetName ?? null,

@@ -1,18 +1,16 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // ADD THIS LINE: Enables global validation using your DTOs!
-  app.useGlobalPipes(
-    new ValidationPipe({
-      whitelist: true, // Strips out extra fields not defined in the DTO
-      transform: true, // Automatically transforms payloads to DTO instances
-    }),
-  );
+  app.enableCors({
+    origin: 'http://localhost:3000', // This is connection for Next.js frontend URL
+    methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true,
+  });
 
-  await app.listen(3000);
+  await app.listen(3001);
 }
 bootstrap();

@@ -23,7 +23,19 @@ const userSelect = {
 
 @Injectable()
 export class AssetsService {
+  
   constructor(private readonly prisma: PrismaService) {}
+
+  async getAssetAssignments() {
+    return this.prisma.assetAssignment.findMany({
+      include: {
+        asset: true,
+        assignedBy: { select: userSelect },
+        assignedTo: { select: userSelect },
+      },
+      orderBy: { assignedAt: 'desc' },
+    });
+  }
 
   async create(dto: CreateAssetDto) {
     if (dto.assignedToId) {
@@ -189,18 +201,7 @@ export class AssetsService {
       if (!assignedTo)
         throw new BadRequestException('assignedToId user not found');
 
-      // Update asset and add history log
-      const updatedAsset = await tx.asset.update({
-        where: { id },
-        data: {
-          assignedToId: dto.assignedToId,
-          assignedDate: new Date(),
-          assetStatus: AssetStatus.ASSIGNED,
-        },
-        include: { assignedTo: { select: userSelect } },
-      });
-
-      await tx.assetAssignment.create({
+      return tx.assetAssignment.create({
         data: {
           assetId: id,
           assignedById: dto.assignedById,
@@ -208,7 +209,6 @@ export class AssetsService {
         },
       });
 
-      return updatedAsset;
     });
   }
 

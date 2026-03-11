@@ -110,8 +110,8 @@ export class TicketsService {
   private mapAssetIssueInput(dto: {
     assetIssue?: {
       assetSerialNumber?: string | null;
-      assetCategory?: string | null;
-      assetClassification?: 'NETWORK' | 'SOFTWARE' | 'HARDWARE' | null;
+      assetClassification?: string | null;
+      assetCategory?: 'NETWORK' | 'SOFTWARE' | 'HARDWARE' | null;
       requestedAssetName?: string | null;
     } | null;
   }) {

@@ -6,11 +6,11 @@ export class AssetIssueDto {
 
   @IsOptional()
   @IsString()
-  assetCategory?: string | null;
+  assetClassification?: string | null;
 
   @IsOptional()
   @IsIn(['NETWORK', 'SOFTWARE', 'HARDWARE'])
-  assetClassification?: 'NETWORK' | 'SOFTWARE' | 'HARDWARE' | null;
+  assetCategory?: 'NETWORK' | 'SOFTWARE' | 'HARDWARE' | null;
 
   @IsOptional()
   @IsString()
